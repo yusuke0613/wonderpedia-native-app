@@ -1,14 +1,21 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
-import { Book, MessageCircle, Rocket, Settings, User as User2, Chrome as Home } from 'lucide-react-native';
+import {
+  Book,
+  MessageCircle,
+  Rocket,
+  Settings,
+  User as User2,
+  Home,
+} from 'lucide-react-native';
 import Colors from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import ChildSwitcher from '@/components/ChildSwitcher';
 
-export default function TabLayout() {
-  const { user, selectedChild } = useAuth();
-  
+export default function AuthenticatedTabsLayout() {
+  const { user } = useAuth();
+
   if (!user) {
     return null;
   }
@@ -17,6 +24,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: '#8A8A8A',
         tabBarStyle: {
           backgroundColor: Colors.background,
           borderTopWidth: 0,
@@ -28,6 +36,7 @@ export default function TabLayout() {
         tabBarLabelStyle: {
           fontFamily: 'ComicNeue-Bold',
           fontSize: 11,
+          marginTop: -5,
         },
         tabBarIconStyle: {
           marginTop: 5,
@@ -44,68 +53,71 @@ export default function TabLayout() {
         },
         headerShadowVisible: false,
         headerShown: true,
-        headerTitle: props => <ChildSwitcher {...props} />,
+        headerTitle: () => <ChildSwitcher />,
         headerTitleAlign: 'center',
-      }}>
-      
+        tabBarHideOnKeyboard: true,
+      }}
+    >
       <Tabs.Screen
         name="home"
         options={{
           title: 'ホーム',
           tabBarIcon: ({ color, size }) => (
-            <Home size={size} color={color} />
+            <Home size={size - 2} color={color} />
           ),
         }}
       />
-      
+
       <Tabs.Screen
-        name="index"
+        name="create"
         options={{
           title: 'つくる',
+          headerTitle: 'えほんをつくる',
           tabBarIcon: ({ color, size }) => (
-            <Rocket size={size} color={color} />
+            <Rocket size={size - 2} color={color} />
           ),
         }}
       />
-      
+
       <Tabs.Screen
         name="chat"
         options={{
           title: 'はなす',
+          headerShown: false, // チャット画面では独自のヘッダーを使用
           tabBarIcon: ({ color, size }) => (
-            <MessageCircle size={size} color={color} />
+            <MessageCircle size={size - 2} color={color} />
           ),
         }}
       />
-      
+
       <Tabs.Screen
         name="library"
         options={{
           title: 'ほんだな',
+          headerTitle: 'えほんだな',
           tabBarIcon: ({ color, size }) => (
-            <Book size={size} color={color} />
+            <Book size={size - 2} color={color} />
           ),
         }}
       />
-      
-      {user.isParent && (
-        <Tabs.Screen
-          name="parent-dashboard"
-          options={{
-            title: 'おやこ',
-            tabBarIcon: ({ color, size }) => (
-              <User2 size={size} color={color} />
-            ),
-          }}
-        />
-      )}
-      
+
+      <Tabs.Screen
+        name="parent-dashboard"
+        options={{
+          title: 'おやこ',
+          headerTitle: 'おやこ設定',
+          tabBarIcon: ({ color, size }) => (
+            <User2 size={size - 2} color={color} />
+          ),
+        }}
+      />
+
       <Tabs.Screen
         name="settings"
         options={{
           title: 'せってい',
           tabBarIcon: ({ color, size }) => (
-            <Settings size={size} color={color} />
+            <Settings size={size - 2} color={color} />
           ),
         }}
       />

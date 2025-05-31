@@ -50,7 +50,7 @@ const tokenStorage = {
       return;
     }
     return await SecureStore.deleteItemAsync(key);
-  }
+  },
 };
 
 // Mock data for demo
@@ -59,7 +59,9 @@ const MOCK_CHILDREN: Child[] = [
   { id: '2', name: 'Noah', age: 7, avatar: 'boy' },
 ];
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [childProfiles, setChildProfiles] = useState<Child[]>(MOCK_CHILDREN);
   const [selectedChild, setSelectedChild] = useState<Child | null>(null);
@@ -73,16 +75,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (userJSON) {
           const parsedUser = JSON.parse(userJSON);
           setUser(parsedUser);
-          
+
           // Load child profiles
           const childJSON = await tokenStorage.getItem('children');
           if (childJSON) {
             setChildProfiles(JSON.parse(childJSON));
           } else {
             // Save mock data
-            await tokenStorage.setItem('children', JSON.stringify(MOCK_CHILDREN));
+            await tokenStorage.setItem(
+              'children',
+              JSON.stringify(MOCK_CHILDREN)
+            );
           }
-          
+
           // Set first child as selected by default
           if (childProfiles.length > 0 && !selectedChild) {
             setSelectedChild(childProfiles[0]);
@@ -103,13 +108,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       // Mock API call - in real app, would be a Supabase auth call
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
       // Mock successful login
       const mockUser = { id: '123', email, isParent: true };
       await tokenStorage.setItem('user', JSON.stringify(mockUser));
       setUser(mockUser);
-      
+
       // Set first child as selected by default if available
       if (childProfiles.length > 0) {
         setSelectedChild(childProfiles[0]);
@@ -126,8 +131,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       // Mock API call - in real app, would be a Supabase auth call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
       // Mock successful registration
       const mockUser = { id: '123', email, isParent: true };
       await tokenStorage.setItem('user', JSON.stringify(mockUser));
@@ -163,18 +168,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: Date.now().toString(),
         name,
         age,
-        avatar
+        avatar,
       };
-      
+
       const updatedChildren = [...childProfiles, newChild];
       setChildProfiles(updatedChildren);
-      
+
       // Save to storage
       await tokenStorage.setItem('children', JSON.stringify(updatedChildren));
-      
+
       // Select the newly created child
       setSelectedChild(newChild);
-      
+
       return Promise.resolve();
     } catch (error) {
       console.error('Add child failed:', error);
@@ -193,7 +198,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         logout,
         register,
         selectChild,
-        addChild
+        addChild,
       }}
     >
       {children}

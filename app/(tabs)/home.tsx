@@ -5,73 +5,80 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import { router } from 'expo-router';
-import Animated, { FadeInDown } from 'react-native-reanimated';
-import { Book, MessageCircle, Rocket } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 
 const { width } = Dimensions.get('window');
-const BUTTON_WIDTH = width * 0.8;
+const BUTTON_WIDTH = width * 0.9;
 
 export default function HomeScreen() {
   const { selectedChild } = useAuth();
 
   if (!selectedChild) {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text style={styles.message}>こどものプロフィールをえらんでね</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Image
-        source={{ 
-          uri: 'https://images.pexels.com/photos/1139613/pexels-photo-1139613.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2' 
-        }}
-        style={styles.logo}
-      />
-      
-      <Text style={styles.greeting}>
-        こんにちは、{selectedChild.name}！
-      </Text>
-      
-      <View style={styles.buttonContainer}>
-        <Animated.View entering={FadeInDown.delay(200).springify()}>
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: Colors.primary }]}
-            onPress={() => router.push('/library')}
-          >
-            <Book size={32} color={Colors.white} />
-            <Text style={styles.buttonText}>ほんだな</Text>
-          </TouchableOpacity>
-        </Animated.View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.characterButton}>
+          <View style={styles.characterIcon}>
+            <Text style={styles.owlIcon}>🦉</Text>
+          </View>
+          <Text style={styles.characterText}>キャラ</Text>
+        </TouchableOpacity>
 
-        <Animated.View entering={FadeInDown.delay(400).springify()}>
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: Colors.secondary }]}
-            onPress={() => router.push('/')}
-          >
-            <MessageCircle size={32} color={Colors.white} />
-            <Text style={styles.buttonText}>わからないことをきく</Text>
-          </TouchableOpacity>
-        </Animated.View>
-
-        <Animated.View entering={FadeInDown.delay(600).springify()}>
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: Colors.accent }]}
-            onPress={() => router.push('/')}
-          >
-            <Rocket size={32} color={Colors.white} />
-            <Text style={styles.buttonText}>じぶんでおはなしをつくる</Text>
-          </TouchableOpacity>
-        </Animated.View>
+        <TouchableOpacity style={styles.characterButton}>
+          <View style={styles.characterIcon}>
+            <Text style={styles.owlIcon}>🦉</Text>
+          </View>
+          <Text style={styles.characterText}>キャラ</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+
+      <View style={styles.mainContainer}>
+        <View style={styles.messageContainer}>
+          <Text style={styles.messageText}>えほんだな</Text>
+        </View>
+
+        <View style={styles.createSection}>
+          <Text style={styles.createTitle}>えほんをつくる</Text>
+
+          <TouchableOpacity
+            style={styles.optionButton}
+            onPress={() => router.push('/create')}
+          >
+            <Text style={styles.optionText}>わからないことを</Text>
+            <Text style={styles.optionTextBold}>えほんにきく</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.optionButton}
+            onPress={() => router.push('/')}
+          >
+            <Text style={styles.optionText}>おはなしをかんがえて</Text>
+            <Text style={styles.optionTextBold}>つくる</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.bottomNav}>
+          <TouchableOpacity style={styles.navButton}>
+            <Text style={styles.navText}>ポイント</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navButton}>
+            <Text style={styles.navText}>みんなのえほん</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -79,8 +86,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    alignItems: 'center',
-    paddingTop: 40,
   },
   message: {
     fontFamily: 'ComicNeue-Regular',
@@ -88,45 +93,97 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
-  logo: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 24,
-  },
-  greeting: {
-    fontFamily: 'ComicNeue-Bold',
-    fontSize: 24,
-    color: Colors.text,
-    marginBottom: 40,
-  },
-  buttonContainer: {
-    alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: 20,
-  },
-  button: {
-    width: BUTTON_WIDTH,
-    height: 100,
-    borderRadius: 20,
-    marginBottom: 20,
+  header: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 10,
   },
-  buttonText: {
+  characterButton: {
+    alignItems: 'center',
+  },
+  characterIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#4EB6C2',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  owlIcon: {
+    fontSize: 30,
+  },
+  characterText: {
+    fontFamily: 'ComicNeue-Regular',
+    fontSize: 14,
+    color: Colors.text,
+  },
+  mainContainer: {
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: 20,
+  },
+  messageContainer: {
+    backgroundColor: '#F6E79C',
+    width: BUTTON_WIDTH,
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  messageText: {
     fontFamily: 'ComicNeue-Bold',
     fontSize: 20,
-    color: Colors.white,
-    marginLeft: 16,
+    color: Colors.text,
+    textAlign: 'center',
+  },
+  createSection: {
+    backgroundColor: '#F6D44C',
+    width: BUTTON_WIDTH,
+    borderRadius: 15,
+    padding: 15,
+    alignItems: 'center',
+  },
+  createTitle: {
+    fontFamily: 'ComicNeue-Bold',
+    fontSize: 20,
+    color: Colors.text,
+    marginBottom: 15,
+  },
+  optionButton: {
+    backgroundColor: 'white',
+    width: '90%',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+    alignItems: 'center',
+  },
+  optionText: {
+    fontFamily: 'ComicNeue-Regular',
+    fontSize: 16,
+    color: Colors.text,
+  },
+  optionTextBold: {
+    fontFamily: 'ComicNeue-Bold',
+    fontSize: 20,
+    color: Colors.text,
+  },
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: BUTTON_WIDTH,
+    marginTop: 20,
+  },
+  navButton: {
+    borderWidth: 1,
+    borderColor: '#F6D44C',
+    borderRadius: 10,
+    padding: 15,
+    width: '48%',
+    alignItems: 'center',
+  },
+  navText: {
+    fontFamily: 'ComicNeue-Regular',
+    fontSize: 16,
+    color: Colors.text,
   },
 });

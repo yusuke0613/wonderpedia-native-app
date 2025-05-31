@@ -9,7 +9,7 @@ export default function AuthLayout() {
   useEffect(() => {
     if (!isLoading && user) {
       // User is logged in, redirect to main app
-      router.replace('/(tabs)');
+      router.replace('/(tabs)/home');
     }
   }, [user, isLoading]);
 

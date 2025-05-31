@@ -5,258 +5,315 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
-  Image,
   Platform,
   KeyboardAvoidingView,
   ActivityIndicator,
-  ScrollView
+  ScrollView,
+  SafeAreaView,
 } from 'react-native';
-import { Link } from 'expo-router';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import { Link, useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import Colors from '@/constants/Colors';
 
-export default function RegisterScreen() {
+export default function ChildRegistrationScreen() {
+  const router = useRouter();
   const { register, isLoading } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [childInfo, setChildInfo] = useState({
+    name: '',
+    age: '',
+    gender: '',
+    interests: '',
+  });
   const [error, setError] = useState('');
 
   const handleRegister = async () => {
-    if (!email || !password || !confirmPassword) {
-      setError('Please fill all fields');
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+    if (!childInfo.name || !childInfo.age) {
+      setError('お子様のお名前と年齢は必須項目です');
       return;
     }
 
     try {
       setError('');
-      await register(email, password);
+      await register(childInfo.name, childInfo.age);
+      setTimeout(() => {
+        router.push('/(tabs)');
+      }, 1500);
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      setError('登録に失敗しました。もう一度お試しください。');
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={20}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.logoContainer}>
-          <Image
-            source={{ 
-              uri: 'https://images.pexels.com/photos/6936382/pexels-photo-6936382.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-            }}
-            style={styles.backgroundImage}
-          />
-          <View style={styles.overlay} />
-          <Animated.Image
-            entering={FadeInDown.delay(200).springify()}
-            source={{ 
-              uri: 'https://images.pexels.com/photos/1139613/pexels-photo-1139613.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2' 
-            }}
-            style={styles.logo}
-          />
-          <Animated.Text
-            entering={FadeInDown.delay(400).springify()}
-            style={styles.appName}
-          >
-            StoryPals
-          </Animated.Text>
-          <Animated.Text
-            entering={FadeInDown.delay(600).springify()}
-            style={styles.appTagline}
-          >
-            Where imagination comes to life
-          </Animated.Text>
-        </View>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoidView}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <View style={styles.header}>
+            <Text style={styles.title}>お子様の情報を登録</Text>
+            <Text style={styles.subtitle}>
+              お子様に合った絵本を作成するために、以下の情報をご登録ください
+            </Text>
+          </View>
 
-        <Animated.View
-          entering={FadeInDown.delay(800).springify()}
-          style={styles.formContainer}
-        >
-          <Text style={styles.title}>Create Account</Text>
-          
           {error ? (
-            <Text style={styles.errorText}>{error}</Text>
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
           ) : null}
-          
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your email"
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
+
+          <View style={styles.formContainer}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>
+                お名前 <Text style={styles.required}>*</Text>
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder="お子様のお名前"
+                value={childInfo.name}
+                onChangeText={(text) =>
+                  setChildInfo({ ...childInfo, name: text })
+                }
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>
+                年齢 <Text style={styles.required}>*</Text>
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder="例: 5"
+                value={childInfo.age}
+                onChangeText={(text) =>
+                  setChildInfo({ ...childInfo, age: text })
+                }
+                keyboardType="number-pad"
+                maxLength={2}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>性別</Text>
+              <View style={styles.genderButtonsContainer}>
+                <TouchableOpacity
+                  style={[
+                    styles.genderButton,
+                    childInfo.gender === '男の子' &&
+                      styles.selectedGenderButton,
+                  ]}
+                  onPress={() =>
+                    setChildInfo({ ...childInfo, gender: '男の子' })
+                  }
+                >
+                  <Text
+                    style={[
+                      styles.genderButtonText,
+                      childInfo.gender === '男の子' &&
+                        styles.selectedGenderButtonText,
+                    ]}
+                  >
+                    男の子
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.genderButton,
+                    childInfo.gender === '女の子' &&
+                      styles.selectedGenderButton,
+                  ]}
+                  onPress={() =>
+                    setChildInfo({ ...childInfo, gender: '女の子' })
+                  }
+                >
+                  <Text
+                    style={[
+                      styles.genderButtonText,
+                      childInfo.gender === '女の子' &&
+                        styles.selectedGenderButtonText,
+                    ]}
+                  >
+                    女の子
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>好きなもの・趣味</Text>
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                placeholder="例: 恐竜、宇宙、プリンセス、電車など"
+                value={childInfo.interests}
+                onChangeText={(text) =>
+                  setChildInfo({ ...childInfo, interests: text })
+                }
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+              />
+            </View>
+
+            <TouchableOpacity
+              style={styles.registerButton}
+              onPress={handleRegister}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.registerButtonText}>登録する</Text>
+              )}
+            </TouchableOpacity>
+
+            <View style={styles.loginLinkContainer}>
+              <Text style={styles.loginText}>
+                すでにアカウントをお持ちの方は
+              </Text>
+              <Link href="/(guest-tabs)/login" asChild>
+                <TouchableOpacity>
+                  <Text style={styles.loginLink}>ログイン</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
           </View>
-          
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Password</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Create a password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
-          </View>
-          
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Confirm Password</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Confirm your password"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              secureTextEntry
-            />
-          </View>
-          
-          <TouchableOpacity
-            style={styles.registerButton}
-            onPress={handleRegister}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator color={Colors.white} />
-            ) : (
-              <Text style={styles.registerButtonText}>Create Account</Text>
-            )}
-          </TouchableOpacity>
-          
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>Already have an account? </Text>
-            <Link href="/auth/login" asChild>
-              <TouchableOpacity>
-                <Text style={styles.loginLink}>Log In</Text>
-              </TouchableOpacity>
-            </Link>
-          </View>
-        </Animated.View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: '#f5f5f5',
+  },
+  keyboardAvoidView: {
+    flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
+    padding: 20,
   },
-  logoContainer: {
-    height: 300,
+  header: {
+    marginBottom: 30,
     alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  backgroundImage: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    borderRadius: 20,
-    marginBottom: 16,
-  },
-  appName: {
-    fontFamily: 'ComicNeue-Bold',
-    fontSize: 36,
-    color: Colors.white,
-    textAlign: 'center',
-  },
-  appTagline: {
-    fontFamily: 'ComicNeue-Regular',
-    fontSize: 16,
-    color: Colors.white,
-    marginTop: 8,
-  },
-  formContainer: {
-    flex: 1,
-    backgroundColor: Colors.background,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    marginTop: -30,
-    paddingTop: 30,
-    paddingHorizontal: 24,
-    paddingBottom: 24,
   },
   title: {
-    fontFamily: 'ComicNeue-Bold',
     fontSize: 24,
-    marginBottom: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
     textAlign: 'center',
+    color: '#333',
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#666',
+    lineHeight: 22,
+  },
+  formContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  errorContainer: {
+    backgroundColor: '#ffeeee',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#ffcccc',
   },
   errorText: {
-    fontFamily: 'ComicNeue-Regular',
+    color: '#cc0000',
     fontSize: 14,
-    color: Colors.error,
     textAlign: 'center',
-    marginBottom: 16,
   },
   inputContainer: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
   label: {
-    fontFamily: 'ComicNeue-Bold',
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 8,
+    fontWeight: '500',
+    color: '#333',
+  },
+  required: {
+    color: '#E9785E',
   },
   input: {
-    fontFamily: 'ComicNeue-Regular',
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
     fontSize: 16,
+    backgroundColor: '#fafafa',
+  },
+  textArea: {
+    height: 100,
+    paddingTop: 12,
+  },
+  genderButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  genderButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    marginHorizontal: 5,
+    alignItems: 'center',
+    backgroundColor: '#fafafa',
+  },
+  selectedGenderButton: {
+    backgroundColor: '#E9785E',
+    borderColor: '#E9785E',
+  },
+  genderButtonText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  selectedGenderButtonText: {
+    color: 'white',
   },
   registerButton: {
-    backgroundColor: Colors.primary,
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: '#E9785E',
+    borderRadius: 8,
+    paddingVertical: 15,
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 10,
   },
   registerButtonText: {
-    fontFamily: 'ComicNeue-Bold',
-    color: Colors.white,
-    fontSize: 18,
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
-  footer: {
+  loginLinkContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 24,
+    marginTop: 20,
   },
-  footerText: {
-    fontFamily: 'ComicNeue-Regular',
+  loginText: {
+    color: '#666',
     fontSize: 14,
   },
   loginLink: {
-    fontFamily: 'ComicNeue-Bold',
+    color: '#E9785E',
     fontSize: 14,
-    color: Colors.primary,
+    fontWeight: 'bold',
+    marginLeft: 5,
   },
 });
