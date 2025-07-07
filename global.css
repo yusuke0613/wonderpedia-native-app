@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary colors - Blue系 */
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-200: #bfdbfe;
+    --color-primary-300: #93c5fd;
+    --color-primary-400: #60a5fa;
+    --color-primary-500: #3b82f6;
+    --color-primary-600: #2563eb;
+    --color-primary-700: #1d4ed8;
+    --color-primary-800: #1e40af;
+    --color-primary-900: #1e3a8a;
+    --color-primary-950: #172554;
+    
+    /* Secondary colors - グレー系 */
+    --color-secondary-50: #f9fafb;
+    --color-secondary-100: #f3f4f6;
+    --color-secondary-200: #e5e7eb;
+    --color-secondary-300: #d1d5db;
+    --color-secondary-400: #9ca3af;
+    --color-secondary-500: #6b7280;
+    --color-secondary-600: #4b5563;
+    --color-secondary-700: #374151;
+    --color-secondary-800: #1f2937;
+    --color-secondary-900: #111827;
+    --color-secondary-950: #030712;
+    
+    /* Key colors - Yellow系 */
+    --color-key-50: #fefce8;
+    --color-key-100: #fef9c3;
+    --color-key-200: #fef08a;
+    --color-key-300: #fde047;
+    --color-key-400: #facc15;
+    --color-key-500: #eab308;
+    --color-key-600: #ca8a04;
+    --color-key-700: #a16207;
+    --color-key-800: #854d0e;
+    --color-key-900: #713f12;
+    --color-key-950: #422006;
+    
+    /* Semantic colors */
+    --color-success: #22c55e;
+    --color-warning: #f97316;
+    --color-error: #ef4444;
+    --color-info: #3b82f6;
+    
+    /* Background colors */
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f9fafb;
+    --color-bg-tertiary: #f3f4f6;
+    
+    /* Text colors */
+    --color-text-primary: #111827;
+    --color-text-secondary: #6b7280;
+    --color-text-tertiary: #9ca3af;
+    --color-text-inverse: #ffffff;
+  }
+}
