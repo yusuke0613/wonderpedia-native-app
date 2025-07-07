@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, Image, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
@@ -94,7 +94,11 @@ export default function TeachingCreationScreen({
   return (
     <View className="bg-primary-400 flex-1">
       <SafeAreaView className="flex-1">
-        <View className="bg-primary-400 flex-1 px-4">
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          className="flex-1">
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View className="bg-primary-400 flex-1 px-4">
           {/* ヘッダー */}
           <View className="py-4">
             <BackButton onPress={onBack} style={{ left: 0 }} />
@@ -237,6 +241,9 @@ export default function TeachingCreationScreen({
                 minHeight: 80,
                 textAlignVertical: 'top',
               }}
+              returnKeyType="done"
+              blurOnSubmit={true}
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
           </View>
 
@@ -256,7 +263,9 @@ export default function TeachingCreationScreen({
               <Text className="text-center text-lg font-bold text-white">はじめる</Text>
             </TouchableOpacity>
           </View>
-        </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
   );

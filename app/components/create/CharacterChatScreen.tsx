@@ -8,6 +8,8 @@ import {
   Platform,
   Image,
   Animated,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useRef, useEffect } from 'react';
@@ -94,6 +96,7 @@ export default function CharacterChatScreen({
 
     setMessages((prev) => [...prev, newUserMessage]);
     setInputText('');
+    Keyboard.dismiss();
 
     // キャラクターの返信をシミュレート
     setTimeout(() => {
@@ -216,12 +219,15 @@ export default function CharacterChatScreen({
           </View>
 
           {/* チャットエリア */}
-          <ScrollView
-            ref={scrollViewRef}
-            className="flex-1 px-4 py-2"
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 20 }}>
-            {messages.map((message) => (
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View className="flex-1">
+              <ScrollView
+                ref={scrollViewRef}
+                className="flex-1 px-4 py-2"
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 20 }}
+                keyboardShouldPersistTaps="handled">
+              {messages.map((message) => (
               <View
                 key={message.id}
                 className={
@@ -302,7 +308,9 @@ export default function CharacterChatScreen({
                 </TouchableOpacity>
               </View>
             )}
-          </ScrollView>
+              </ScrollView>
+            </View>
+          </TouchableWithoutFeedback>
 
           {/* 入力エリア */}
           <View
@@ -325,7 +333,12 @@ export default function CharacterChatScreen({
                     placeholderTextColor="#6B7280"
                     className="text-primary-800 px-5 py-4 text-lg font-medium"
                     style={{ minHeight: 56 }}
-                    onSubmitEditing={sendMessage}
+                    onSubmitEditing={() => {
+                      sendMessage();
+                      Keyboard.dismiss();
+                    }}
+                    returnKeyType="send"
+                    blurOnSubmit={true}
                   />
                 </View>
 
